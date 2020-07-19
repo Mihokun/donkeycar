@@ -158,11 +158,11 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None, camera_type
             ctr = get_js_controller(cfg)
 
             if cfg.USE_NETWORKED_JS:
-                from donkeycar.parts.controller import JoyStickSub
-                netwkJs = JoyStickSub(cfg.NETWORK_JS_SERVER_IP)
+                from donkeycar.parts.controller2 import JoyStickSub
+                netwkJs = JoyStickSub(ip=cfg.NETWORK_JS_SERVER_IP, port=5560)
                 V.add(netwkJs, threaded=True)
                 ctr.js = netwkJs
-        
+
         V.add(ctr, 
           inputs=['cam/image_array'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],

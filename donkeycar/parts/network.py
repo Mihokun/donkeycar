@@ -3,6 +3,32 @@ import zlib, pickle
 import zmq
 import time
 
+class ZMQValuePub_connect(object):
+    '''
+    Use Zero Message Queue (zmq) to publish values
+    '''
+    def __init__(self, name, ip, port = 5556, hwm=10):
+        context = zmq.Context()
+        self.name = name
+        self.socket = context.socket(zmq.PUB)
+        self.socket.set_hwm(hwm)
+        self.socket.connect("tcp://%s:%d" % (ip, port))
+
+    def run(self, values):
+        #packet = { "name": self.name, "val" : values }
+        #print("*** ", type(values))
+        if values != None:
+            #print("send :" , len(values))
+            #p = pickle.dumps(packet)
+            #z = zlib.compress(p)
+            self.socket.send(values)
+
+    def shutdown(self):
+        print("shutting down zmq")
+        #self.socket.close()
+        context = zmq.Context()
+        context.destroy()
+
 class ZMQValuePub(object):
     '''
     Use Zero Message Queue (zmq) to publish values
