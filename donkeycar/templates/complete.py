@@ -598,10 +598,18 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None, camera_type
     tub = th.new_tub_writer(inputs=inputs, types=types, user_meta=meta)
     V.add(tub, inputs=inputs, outputs=["tub/num_records"], run_condition='recording')
 
+    #if cfg.PUB_CAMERA_IMAGES:
+    #    from donkeycar.parts.network import TCPServeValue
+    #    from donkeycar.parts.image import ImgArrToJpg
+    #    pub = TCPServeValue("camera")
+    #    V.add(ImgArrToJpg(), inputs=['cam/image_array'], outputs=['jpg/bin'])
+    #    V.add(pub, inputs=['jpg/bin'])
     if cfg.PUB_CAMERA_IMAGES:
-        from donkeycar.parts.network import TCPServeValue
+        from donkeycar.parts.network import ZMQValuePub_connect
         from donkeycar.parts.image import ImgArrToJpg
-        pub = TCPServeValue("camera")
+        print("start PUB_CAMERA")
+        pub = ZMQValuePub_connect("camera", 
+                    ip=cfg.NETWORK_JS_SERVER_IP, port=5561, hwm=1)
         V.add(ImgArrToJpg(), inputs=['cam/image_array'], outputs=['jpg/bin'])
         V.add(pub, inputs=['jpg/bin'])
 
