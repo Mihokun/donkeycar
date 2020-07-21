@@ -95,6 +95,11 @@ class OLEDPart(object):
             self.wlan0 = 'wlan0 : %s' % (wlan0)
         else:
             self.wlan0 = None
+        ngrok = OLEDPart.get_ip_address_ngrok('dummy')
+        if ngrok is not None:
+            self.ngrok = ngrok
+        else:
+            self.ngrok = None
 
     def run(self):
         if not self.on:
@@ -113,7 +118,7 @@ class OLEDPart(object):
         self.update()
 
     def update_slots(self):
-        updates = [self.wlan0, self.recording, self.user_mode]
+        updates = [self.ngrok, self.recording, self.user_mode]
         index = 0
         # Update slots
         for update in updates:
@@ -143,3 +148,11 @@ class OLEDPart(object):
     @classmethod
     def get_network_interface_state(cls, interface):
         return subprocess.check_output('cat /sys/class/net/%s/operstate' % interface, shell=True).decode('ascii')[:-1]
+
+    @classmethod
+    def get_ip_address_ngrok(cls, interface):
+        cmd = 'curl -s localhost:4040/api/tunnels | jq -r ".tunnels[].public_url"'
+        print(cmd)
+        return subprocess.check_output(cmd, shell=True).decode('ascii')[:-1]
+
+
