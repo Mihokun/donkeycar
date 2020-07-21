@@ -113,7 +113,7 @@ class OLEDPart(object):
         self.update()
 
     def update_slots(self):
-        updates = [self.eth0, self.wlan0, self.recording, self.user_mode]
+        updates = [self.wlan0, self.recording, self.user_mode]
         index = 0
         # Update slots
         for update in updates:
