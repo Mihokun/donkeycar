@@ -116,7 +116,8 @@ def donkey_camera(ip_address, port_no, title):
             scale = 5
             height = img_arr.shape[0] * scale
             width = img_arr.shape[1] * scale 
-            resize_img = cv2.resize(img_arr, (width, height))
+            img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
+            resize_img = cv2.resize(img_bgr, (width, height))
             cv2.imshow(title, resize_img)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break

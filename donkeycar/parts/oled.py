@@ -97,7 +97,8 @@ class OLEDPart(object):
         else:
             self.wlan0 = None
         ngrok = OLEDPart.get_ip_address_ngrok()
-        if ngrok is not None:
+        print("ngrok command ", ngrok)
+        if ngrok != "":
             print('ngrok: ', ngrok)
             ports = re.findall('[0-9]+$', ngrok)
             self.ngrok = ports[0]
