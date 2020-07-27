@@ -93,17 +93,17 @@ class OLEDPart(object):
         #else:
         #    self.eth0 = None
         if wlan0 is not None:
-            self.wlan0 = 'wlan0 : %s' % (wlan0)
+            self.wlan0 = 'IP: %s' % (wlan0)
         else:
             self.wlan0 = None
         ngrok = OLEDPart.get_ip_address_ngrok()
-        print("ngrok command ", ngrok)
+        #print("ngrok command ", ngrok)
         if ngrok != "":
             print('ngrok: ', ngrok)
             ports = re.findall('[0-9]+$', ngrok)
             self.ngrok = ports[0]
         else:
-            self.ngrok = None
+            self.ngrok = "not found ngrok"
 
     def run(self):
         if not self.on:
