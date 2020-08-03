@@ -38,7 +38,7 @@ if __name__ == "__main__":
     cap.set(4, cfg.IMAGE_H) # HEIGHT
     cap.set(5,4) # FPS
 
-    cloud_ip_address = cfg.NETWORK_JS_SERVER
+    cloud_ip_address = cfg.NETWORK_JS_SERVER_IP
     birdview_up_port = cfg.NETWORK_CLOUD_PORT + 4
 
     cap = cv2.VideoCapture(0)

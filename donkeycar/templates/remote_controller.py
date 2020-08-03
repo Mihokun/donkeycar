@@ -133,7 +133,7 @@ if __name__ == "__main__":
         print("*** start donkey controller")
         #
         cfg = dk.load_config()
-        cloud_ip_address = cfg.NETWORK_JS_SERVER
+        cloud_ip_address = cfg.NETWORK_JS_SERVER_IP
         print("addr of zmq proxy: ", cloud_ip_address)
 
         js_up_port = cfg.NETWORK_CLOUD_PORT
