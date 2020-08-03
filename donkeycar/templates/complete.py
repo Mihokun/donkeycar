@@ -159,7 +159,8 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None, camera_type
 
             if cfg.USE_NETWORKED_JS:
                 from donkeycar.parts.controller2 import JoyStickSub
-                netwkJs = JoyStickSub(ip=cfg.NETWORK_JS_SERVER_IP, port=5560)
+                js_down_port = cfg.NETWORK_CLOUD_PORT + 1
+                netwkJs = JoyStickSub(ip=cfg.NETWORK_JS_SERVER_IP, port=js_down_port)
                 V.add(netwkJs, threaded=True)
                 ctr.js = netwkJs
 
@@ -608,8 +609,10 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None, camera_type
         from donkeycar.parts.network import ZMQValuePub_connect
         from donkeycar.parts.image import ImgArrToJpg
         print("start PUB_CAMERA")
+
+        donkey_cam_up_port = cfg.NETWORK_CLOUD_PORT + 2
         pub = ZMQValuePub_connect("camera", 
-                    ip=cfg.NETWORK_JS_SERVER_IP, port=5561, hwm=1)
+                ip=cfg.NETWORK_JS_SERVER_IP, port=donkey_cam_up_port, hwm=1)
         V.add(ImgArrToJpg(), inputs=['cam/image_array'], outputs=['jpg/bin'])
         V.add(pub, inputs=['jpg/bin'])
 

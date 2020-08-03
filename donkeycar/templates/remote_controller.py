@@ -12,7 +12,7 @@ class ZMQValueSub(object):
     '''
     Use Zero Message Queue (zmq) to subscribe to value messages from a remote publisher
     '''
-    def __init__(self, name, ip, port = 5562, hwm=3, return_last=True):
+    def __init__(self, name, ip, port, hwm=3, return_last=True):
         context = zmq.Context()
         self.socket = context.socket(zmq.SUB)
         self.socket.set_hwm(hwm)
@@ -54,7 +54,7 @@ class JoyStickPub(object):
     '''
     Use Zero Message Queue (zmq) to publish the control messages from a local joystick
     '''
-    def __init__(self, controller_type, ip, port = 5559, dev_fn='/dev/input/js0'):
+    def __init__(self, controller_type, ip, port, dev_fn='/dev/input/js0'):
         import zmq
         self.dev_fn = dev_fn
         #self.js = LogitechJoystick(self.dev_fn)
@@ -122,27 +122,35 @@ def donkey_camera(ip_address, port_no, title):
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-def donkey_joystick(ip_address, port_no):
-    cfg = dk.load_config()
-    p = JoyStickPub(cfg.CONTROLLER_TYPE, ip_address, port_no)
+def donkey_joystick(controller, ip_address, port_no):
+    #cfg = dk.load_config()
+    p = JoyStickPub(controller, ip_address, port_no)
     p.run()
 
 
 if __name__ == "__main__":
-    args = sys.argv
-    if len(args) >= 2:
-        try:
-            print("*** start donkey controller")
-            print("zmq proxy: ", args[1])
-            #
-            thread_js   = Thread(target=donkey_joystick, args=(args[1], 5559))
-            thread_cam1 = Thread(target=donkey_camera, args=(args[1], 5562, "driver's view"))
-            #thread_cam2 = Thread(target=donkey_camera, args=(args[1], 5564, "bird's eyes view"))
+    try:
+        print("*** start donkey controller")
+        #
+        cfg = dk.load_config()
+        cloud_ip_address = cfg.NETWORK_JS_SERVER
+        print("addr of zmq proxy: ", cloud_ip_address)
 
-            thread_js.start()
-            thread_cam1.start()
-            #thread_cam2.start()
-        except KeyboardInterrupt:
-            print("keyboard Interrupt")
-    else:
-        print("Argument are too short")
+        js_up_port = cfg.NETWORK_CLOUD_PORT
+        print("port of zmq proxy: ", js_up_port)
+        donkey_cam_down_port = js_up_port + 3
+        #birdview_cam_down_port = js_up_port + 5
+
+        thread_js   = Thread(target=donkey_joystick, 
+            args=(cfg.CONTROLLER_TYPE, cloud_ip_address, js_up_port))
+        thread_cam1 = Thread(target=donkey_camera, 
+            args=(cloud_ip_address, donkey_cam_down_port, "driver's view"))
+        #thread_cam2 = Thread(target=donkey_camera, 
+        #    args=(cloud_ip_address, birdview_cam_down_port, "bird's eyes view"))
+
+        thread_js.start()
+        thread_cam1.start()
+        #thread_cam2.start()
+    except KeyboardInterrupt:
+        print("keyboard Interrupt")
+
