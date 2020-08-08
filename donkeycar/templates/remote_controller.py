@@ -151,10 +151,14 @@ if __name__ == "__main__":
             #thread_cam2 = Thread(target=donkey_camera, 
             #    args=(cloud_ip_address, birdview_cam_down_port, "bird's eyes view"))
 
+            print("start joystick")
             thread_js.start()
             if args[1] == "cam":
+                print("start donkey camera")
                 thread_cam1.start()
             #thread_cam2.start()
+        except KeyboardInterrupt:
+            print("keyboard Interrupt")    
     else:
         print("Argument are too short")        
 
