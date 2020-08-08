@@ -129,28 +129,32 @@ def donkey_joystick(controller, ip_address, port_no):
 
 
 if __name__ == "__main__":
-    try:
-        print("*** start donkey controller")
-        #
-        cfg = dk.load_config()
-        cloud_ip_address = cfg.NETWORK_JS_SERVER_IP
-        print("addr of zmq proxy: ", cloud_ip_address)
+    args = sys.argv
+    if len(args) >= 2:
+        try:
+            print("*** start donkey controller")
+            #
+            cfg = dk.load_config()
+            cloud_ip_address = cfg.NETWORK_JS_SERVER_IP
+            print("addr of zmq proxy: ", cloud_ip_address)
 
-        js_up_port = cfg.NETWORK_CLOUD_PORT
-        print("port of zmq proxy: ", js_up_port)
-        donkey_cam_down_port = js_up_port + 3
-        #birdview_cam_down_port = js_up_port + 5
+            js_up_port = cfg.NETWORK_CLOUD_PORT
+            print("port of zmq proxy: ", js_up_port)
+            donkey_cam_down_port = js_up_port + 3
+            #birdview_cam_down_port = js_up_port + 5
 
-        thread_js   = Thread(target=donkey_joystick, 
-            args=(cfg.CONTROLLER_TYPE, cloud_ip_address, js_up_port))
-        thread_cam1 = Thread(target=donkey_camera, 
-            args=(cloud_ip_address, donkey_cam_down_port, "driver's view"))
-        #thread_cam2 = Thread(target=donkey_camera, 
-        #    args=(cloud_ip_address, birdview_cam_down_port, "bird's eyes view"))
+            thread_js   = Thread(target=donkey_joystick, 
+                args=(cfg.CONTROLLER_TYPE, cloud_ip_address, js_up_port))
+            if args[1] == "cam":
+                thread_cam1 = Thread(target=donkey_camera, 
+                    args=(cloud_ip_address, donkey_cam_down_port, "driver's view"))
+            #thread_cam2 = Thread(target=donkey_camera, 
+            #    args=(cloud_ip_address, birdview_cam_down_port, "bird's eyes view"))
 
-        thread_js.start()
-        thread_cam1.start()
-        #thread_cam2.start()
-    except KeyboardInterrupt:
-        print("keyboard Interrupt")
+            thread_js.start()
+            if args[1] == "cam":
+                thread_cam1.start()
+            #thread_cam2.start()
+    else:
+        print("Argument are too short")        
 
