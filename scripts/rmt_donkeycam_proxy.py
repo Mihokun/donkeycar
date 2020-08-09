@@ -1,0 +1,97 @@
+import sys
+import os
+import time
+from threading import Thread
+import zmq
+import cv2
+import numpy
+import donkeycar as dk
+from donkeycar.utils import binary_to_img, img_to_arr
+
+class ZMQValueSub(object):
+    '''
+    Use Zero Message Queue (zmq) to subscribe to value messages from a remote publisher
+    '''
+    def __init__(self, name, ip, port, hwm=3, return_last=True):
+        context = zmq.Context()
+        self.socket = context.socket(zmq.SUB)
+        self.socket.set_hwm(hwm)
+        self.socket.connect("tcp://%s:%d" % (ip, port))
+        self.socket.setsockopt_string(zmq.SUBSCRIBE, '')
+        self.name = name
+        self.return_last = return_last
+        self.last = None
+
+    def run(self):
+        '''
+        poll socket for input. returns None when nothing was recieved
+        otherwize returns packet data
+        '''
+        try:
+            z = self.socket.recv(flags=zmq.NOBLOCK)
+        except zmq.Again as e:
+            if self.return_last:
+                return self.last
+            return None
+
+        #if self.name == obj['name']:
+        #    self.last = obj['val'] 
+        #    return obj['val']
+        self.last = z
+        return z
+
+        if self.return_last:
+            return self.last
+        return None
+
+    def shutdown(self):
+        self.socket.close()
+        context = zmq.Context()
+        context.destroy()
+
+
+def donkey_camera(ip_address, port_no, title):
+    print("receiving camera data...")
+    s = ZMQValueSub("camera", ip=ip_address, port=port_no, hwm=1)
+    while True:
+        jpg = s.run()
+        #print(res)
+        if jpg != None:
+            #print("got:", len(jpg))
+            image = binary_to_img(jpg)
+            img_arr = img_to_arr(image)
+            scale = 2
+            height = img_arr.shape[0] * scale
+            width = img_arr.shape[1] * scale 
+            img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
+            resize_img = cv2.resize(img_bgr, (width, height))
+            cv2.imshow(title, resize_img)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+
+if __name__ == "__main__":
+    args = sys.argv
+    if len(args) >= 3:
+        try:
+            print("*** monitor driver view")
+            #
+            cfg = dk.load_config()
+            cloud_ip_address = cfg.NETWORK_JS_SERVER_IP
+            print("addr of zmq proxy: ", cloud_ip_address)
+
+            donkey_cam1_down_port = int(args[1]) + 3
+            print("port of zmq proxy: ", donkey_cam1_down_port)
+            #birdview_cam_down_port = js_up_port + 5
+
+            thread_cam1 = Thread(target=donkey_camera, 
+                args=(cloud_ip_address, donkey_cam1_down_port, args[2]))
+            #thread_cam2 = Thread(target=donkey_camera, 
+            #    args=(cloud_ip_address, birdview_cam_down_port, "Second view"))
+
+            thread_cam1.start()
+            #thread_cam2.start()
+        except KeyboardInterrupt:
+            print("keyboard Interrupt")
+    else:
+        print("Argument are too short")
