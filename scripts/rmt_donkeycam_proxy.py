@@ -52,7 +52,13 @@ class ZMQValueSub(object):
 
 def donkey_camera(ip_address, port_no, title):
     print("receiving camera data...")
-    s = ZMQValueSub("camera", ip=ip_address, port=port_no, hwm=1)
+    mtx = 
+        [[315.30341354   0.         335.86219771]
+        [  0.         316.76804977 227.79438377]
+        [  0.           0.           1.        ]]
+    dist =  [-3.15014991e-01  9.69147455e-02  1.93736862e-03  2.06359561e-04  -1.29527346e-02]
+
+    s = ZMQValueSub("camera", ip=ip_address, port=port_no, hwm=1, undistort_flag=False)
     while True:
         jpg = s.run()
         #print(res)
@@ -60,12 +66,17 @@ def donkey_camera(ip_address, port_no, title):
             #print("got:", len(jpg))
             image = binary_to_img(jpg)
             img_arr = img_to_arr(image)
-            scale = 2
-            height = img_arr.shape[0] * scale
-            width = img_arr.shape[1] * scale 
-            img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
-            resize_img = cv2.resize(img_bgr, (width, height))
-            cv2.imshow(title, resize_img)
+            if undistort_flag != False:
+                scale = 2
+                height = img_arr.shape[0] * scale
+                width = img_arr.shape[1] * scale 
+                img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
+                result_img = cv2.resize(img_bgr, (width, height))
+            else:
+                img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
+                result_img = cv2.undistort(img_bgr, mtx, dist, None) # 画像補正
+
+            cv2.imshow(title, result_img)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
@@ -79,18 +90,14 @@ if __name__ == "__main__":
             cfg = dk.load_config()
             cloud_ip_address = cfg.NETWORK_JS_SERVER_IP
             print("addr of zmq proxy: ", cloud_ip_address)
-
             donkey_cam1_down_port = int(args[1]) + 3
             print("port of zmq proxy: ", donkey_cam1_down_port)
-            #birdview_cam_down_port = js_up_port + 5
 
+            undistort_flag = True
             thread_cam1 = Thread(target=donkey_camera, 
-                args=(cloud_ip_address, donkey_cam1_down_port, args[2]))
-            #thread_cam2 = Thread(target=donkey_camera, 
-            #    args=(cloud_ip_address, birdview_cam_down_port, "Second view"))
+                args=(cloud_ip_address, donkey_cam1_down_port, args[2], undistort_flag))
 
             thread_cam1.start()
-            #thread_cam2.start()
         except KeyboardInterrupt:
             print("keyboard Interrupt")
     else:
