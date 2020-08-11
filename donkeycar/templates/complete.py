@@ -612,7 +612,7 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None, camera_type
 
         donkey_cam_up_port = cfg.NETWORK_CLOUD_PORT + 2
         pub = ZMQValuePub_connect("camera", 
-                ip=cfg.NETWORK_JS_SERVER_IP, port=donkey_cam_up_port, hwm=1)
+                ip=cfg.NETWORK_CAM_SERVER_IP, port=donkey_cam_up_port, hwm=1)
         V.add(ImgArrToJpg(), inputs=['cam/image_array'], outputs=['jpg/bin'])
         V.add(pub, inputs=['jpg/bin'])
 

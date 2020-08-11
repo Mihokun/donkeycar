@@ -8,20 +8,21 @@ import numpy
 import donkeycar as dk
 from donkeycar.utils import binary_to_img, img_to_arr
 
-class ZMQValueSub(object):
+
+class ZMQValueRcv(object):
     '''
-    Use Zero Message Queue (zmq) to subscribe to value messages from a remote publisher
+    Use Zero Message Queue (zmq) to publish values
     '''
-    def __init__(self, name, ip, port, hwm=3, return_last=True):
+    def __init__(self, name, port = 5562, hwm=1, return_last=True):
         context = zmq.Context()
         self.socket = context.socket(zmq.SUB)
         self.socket.set_hwm(hwm)
-        self.socket.connect("tcp://%s:%d" % (ip, port))
+        self.socket.bind("tcp://*:%d" % port)
         self.socket.setsockopt_string(zmq.SUBSCRIBE, '')
         self.name = name
         self.return_last = return_last
         self.last = None
-
+    
     def run(self):
         '''
         poll socket for input. returns None when nothing was recieved
@@ -45,12 +46,12 @@ class ZMQValueSub(object):
         return None
 
     def shutdown(self):
-        self.socket.close()
+        print("shutting down zmq")
+        #self.socket.close()
         context = zmq.Context()
         context.destroy()
 
-
-def donkey_camera(ip_address, port_no, title, undistort_flag):
+def donkey_camera(port_no, title, undistort_flag):
     print("receiving camera data...")
     mtx = 
         [[315.30341354   0.         335.86219771]
@@ -58,7 +59,7 @@ def donkey_camera(ip_address, port_no, title, undistort_flag):
         [  0.           0.           1.        ]]
     dist =  [-3.15014991e-01  9.69147455e-02  1.93736862e-03  2.06359561e-04  -1.29527346e-02]
 
-    s = ZMQValueSub("camera", ip=ip_address, port=port_no, hwm=1, return_last=True)
+    s = ZMQValueRcv("camera", port=port_no, hwm=1, return_last=True)
     while True:
         jpg = s.run()
         #print(res)
@@ -85,17 +86,17 @@ if __name__ == "__main__":
     args = sys.argv
     if len(args) >= 3:
         try:
-            print("*** monitor driver view")
+            print("*** monitor driver view directly")
             #
             cfg = dk.load_config()
-            cloud_cam_ip_address = cfg.NETWORK_CAM_SERVER_IP
-            print("addr of zmq proxy: ", cloud_cam_ip_address)
-            donkey_cam1_down_port = int(args[1]) + 3
-            print("port of zmq proxy: ", donkey_cam1_down_port)
+            #cloud_ip_address = cfg.NETWORK_CAM_SERVER_IP
+            #print("addr of zmq proxy: ", cloud_ip_address)
+            donkey_cam1_up_port = int(args[1]) + 2
+            print("port of zmq proxy: ", donkey_cam1_up_port)
 
             undistort_flag = False
             thread_cam1 = Thread(target=donkey_camera, 
-                args=(cloud_cam_ip_address, donkey_cam1_down_port, args[2], undistort_flag))
+                args=(donkey_cam1_up_port, args[2], undistort_flag))
 
             thread_cam1.start()
         except KeyboardInterrupt:

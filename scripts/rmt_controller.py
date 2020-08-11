@@ -135,8 +135,10 @@ if __name__ == "__main__":
             print("*** start donkey controller")
             #
             cfg = dk.load_config()
-            cloud_ip_address = cfg.NETWORK_JS_SERVER_IP
-            print("addr of zmq proxy: ", cloud_ip_address)
+            cloud_js_ip_address = cfg.NETWORK_JS_SERVER_IP
+            print("js  addr of zmq proxy: ", cloud_js_ip_address)
+            cloud_cam_ip_address = cfg.NETWORK_CAM_SERVER_IP
+            print("cam addr of zmq proxy: ", cloud_cam_ip_address)
 
             js_up_port = cfg.NETWORK_CLOUD_PORT
             print("port of zmq proxy: ", js_up_port)
@@ -144,10 +146,10 @@ if __name__ == "__main__":
             #birdview_cam_down_port = js_up_port + 5
 
             thread_js   = Thread(target=donkey_joystick, 
-                args=(cfg.CONTROLLER_TYPE, cloud_ip_address, js_up_port))
+                args=(cfg.CONTROLLER_TYPE, cloud_js_ip_address, js_up_port))
             if args[1] == "cam":
                 thread_cam1 = Thread(target=donkey_camera, 
-                    args=(cloud_ip_address, donkey_cam_down_port, "driver's view"))
+                    args=(cloud_cam_ip_address, donkey_cam_down_port, "driver's view"))
             #thread_cam2 = Thread(target=donkey_camera, 
             #    args=(cloud_ip_address, birdview_cam_down_port, "bird's eyes view"))
 
