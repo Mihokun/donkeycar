@@ -17,11 +17,13 @@ class ZMQValueRcv(object):
         context = zmq.Context()
         self.socket = context.socket(zmq.SUB)
         self.socket.set_hwm(hwm)
+        print("wait for bind")
         self.socket.bind("tcp://*:%d" % port)
         self.socket.setsockopt_string(zmq.SUBSCRIBE, '')
         self.name = name
         self.return_last = return_last
         self.last = None
+        print("init done")
     
     def run(self):
         '''
@@ -53,10 +55,9 @@ class ZMQValueRcv(object):
 
 def donkey_camera(port_no, title, undistort_flag):
     print("receiving camera data...")
-    mtx = 
-        [[315.30341354   0.         335.86219771]
-        [  0.         316.76804977 227.79438377]
-        [  0.           0.           1.        ]]
+    mtx = [[315.30341354   0.         335.86219771]
+           [  0.         316.76804977 227.79438377]
+           [  0.           0.           1.        ]]
     dist =  [-3.15014991e-01  9.69147455e-02  1.93736862e-03  2.06359561e-04  -1.29527346e-02]
 
     s = ZMQValueRcv("camera", port=port_no, hwm=1, return_last=True)
@@ -64,7 +65,7 @@ def donkey_camera(port_no, title, undistort_flag):
         jpg = s.run()
         #print(res)
         if jpg != None:
-            #print("got:", len(jpg))
+            print("got:", len(jpg))
             image = binary_to_img(jpg)
             img_arr = img_to_arr(image)
             if undistort_flag == False:
