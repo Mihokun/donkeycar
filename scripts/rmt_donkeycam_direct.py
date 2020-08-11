@@ -23,7 +23,6 @@ class ZMQValueRcv(object):
         self.name = name
         self.return_last = return_last
         self.last = None
-        print("init done")
     
     def run(self):
         '''
@@ -65,11 +64,11 @@ def donkey_camera(port_no, title, undistort_flag):
         jpg = s.run()
         #print(res)
         if jpg != None:
-            print("got:", len(jpg))
+            #print("got:", len(jpg))
             image = binary_to_img(jpg)
             img_arr = img_to_arr(image)
             if undistort_flag == False:
-                scale = 2
+                scale = 1
                 height = img_arr.shape[0] * scale
                 width = img_arr.shape[1] * scale 
                 img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
