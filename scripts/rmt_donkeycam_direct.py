@@ -107,7 +107,7 @@ if __name__ == "__main__":
             donkey_cam1_up_port = int(args[1]) + 2
             print("port of zmq proxy: ", donkey_cam1_up_port)
 
-            undistort_flag = True
+            undistort_flag = False
             thread_cam1 = Thread(target=donkey_camera, 
                 args=(donkey_cam1_up_port, args[2], undistort_flag))
 
