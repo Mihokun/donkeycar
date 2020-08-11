@@ -4,7 +4,7 @@ import time
 from threading import Thread
 import zmq
 import cv2
-import numpy
+import numpy as np
 import donkeycar as dk
 from donkeycar.utils import binary_to_img, img_to_arr
 
@@ -52,12 +52,25 @@ class ZMQValueRcv(object):
         context = zmq.Context()
         context.destroy()
 
+# キャリブレーションCSVファイルを読み込む関数
+def loadCalibrationFile(mtx_path, dist_path):
+    try:
+        mtx = np.loadtxt(mtx_path, delimiter=',')
+        dist = np.loadtxt(dist_path, delimiter=',')
+    except Exception as e:
+        raise e
+    return mtx, dist
+
 def donkey_camera(port_no, title, undistort_flag):
     print("receiving camera data...")
-    mtx = [315.30341354,   0. ,         335.86219771,
-             0. ,         316.76804977, 227.79438377,
-             0. ,          0. ,          1.        ]
-    dist =  [-3.15014991e-01,  9.69147455e-02,  1.93736862e-03,  2.06359561e-04,  -1.29527346e-02]
+    #mtx = [315.30341354,   0. ,         335.86219771,
+    #         0. ,         316.76804977, 227.79438377,
+    #         0. ,          0. ,          1.        ]
+    #dist =  [-3.15014991e-01,  9.69147455e-02,  1.93736862e-03,  2.06359561e-04,  -1.29527346e-02]
+    if undistort_flag == True:
+        mtx_path = "~/mycar3/mtx.csv"
+        dist_path = "~/mycar3/dist.csv"
+        mtx, dist = loadCalibrationFile(mtx_path, dist_path)
 
     s = ZMQValueRcv("camera", port=port_no, hwm=1, return_last=True)
     while True:
