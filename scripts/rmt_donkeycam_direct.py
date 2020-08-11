@@ -71,7 +71,6 @@ def donkey_camera(port_no, title, undistort_flag):
                 scale = 1
                 height = img_arr.shape[0] * scale
                 width = img_arr.shape[1] * scale 
-                print(height, " , ", width)
                 img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
                 result_img = cv2.resize(img_bgr, (width, height))
             else:
@@ -95,7 +94,7 @@ if __name__ == "__main__":
             donkey_cam1_up_port = int(args[1]) + 2
             print("port of zmq proxy: ", donkey_cam1_up_port)
 
-            undistort_flag = False
+            undistort_flag = True
             thread_cam1 = Thread(target=donkey_camera, 
                 args=(donkey_cam1_up_port, args[2], undistort_flag))
 
