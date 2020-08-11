@@ -68,8 +68,8 @@ def donkey_camera(port_no, title, undistort_flag):
     #         0. ,          0. ,          1.        ]
     #dist =  [-3.15014991e-01,  9.69147455e-02,  1.93736862e-03,  2.06359561e-04,  -1.29527346e-02]
     if undistort_flag == True:
-        mtx_path = "~/mycar3/mtx.csv"
-        dist_path = "~/mycar3/dist.csv"
+        mtx_path = "mtx.csv"
+        dist_path = "dist.csv"
         mtx, dist = loadCalibrationFile(mtx_path, dist_path)
 
     s = ZMQValueRcv("camera", port=port_no, hwm=1, return_last=True)
