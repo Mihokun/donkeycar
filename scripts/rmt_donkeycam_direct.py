@@ -92,9 +92,9 @@ def donkey_camera(port_no, title, undistort_flag):
 
 
 if __name__ == "__main__":
-'''
-     python rmt_donkeycam 5560 "minion" 0
-'''
+    '''
+    python ../projects/donkeycar/scripts/rmt_donkeycar_direct.py 5560 "minion" 0
+    '''
     args = sys.argv
     if len(args) >= 4:
         try:
