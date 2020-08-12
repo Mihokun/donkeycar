@@ -100,7 +100,7 @@ if __name__ == "__main__":
         try:
             print("*** monitor driver view directly")
             #
-            cfg = dk.load_config()
+            #cfg = dk.load_config()
             #cloud_ip_address = cfg.NETWORK_CAM_SERVER_IP
             #print("addr of zmq proxy: ", cloud_ip_address)
             donkey_cam1_up_port = int(args[1]) + 2
