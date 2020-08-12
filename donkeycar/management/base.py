@@ -92,14 +92,14 @@ class CreateCar(BaseCommand):
         myconfig_template_path = os.path.join(TEMPLATES_PATH, 'myconfig.py')
         train_template_path = os.path.join(TEMPLATES_PATH, 'train.py')
         calibrate_template_path = os.path.join(TEMPLATES_PATH, 'calibrate.py')
-        #controller_template_path = os.path.join(TEMPLATES_PATH, 'remote_controller.py')
+        #controller_template_path = os.path.join(TEMPLATES_PATH, 'rmt_controller.py')
         #webcam_template_path = os.path.join(TEMPLATES_PATH, 'remote_webcamera.py')
         car_app_path = os.path.join(path, 'manage.py')
         car_config_path = os.path.join(path, 'config.py')
         mycar_config_path = os.path.join(path, 'myconfig.py')
         train_app_path = os.path.join(path, 'train.py')
         calibrate_app_path = os.path.join(path, 'calibrate.py')      
-        #controller_app_path = os.path.join(path, 'remote_controller.py')   
+        #controller_app_path = os.path.join(path, 'rmt_controller.py')   
         #webcam_app_path = os.path.join(path, 'remote_webcamera.py') 
 
         if os.path.exists(car_app_path) and not overwrite:

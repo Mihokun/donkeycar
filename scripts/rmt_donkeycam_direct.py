@@ -63,11 +63,7 @@ def loadCalibrationFile(mtx_path, dist_path):
 
 def donkey_camera(port_no, title, undistort_flag):
     print("receiving camera data...")
-    #mtx = [315.30341354,   0. ,         335.86219771,
-    #         0. ,         316.76804977, 227.79438377,
-    #         0. ,          0. ,          1.        ]
-    #dist =  [-3.15014991e-01,  9.69147455e-02,  1.93736862e-03,  2.06359561e-04,  -1.29527346e-02]
-    if undistort_flag == True:
+    if undistort_flag == 0:
         mtx_path = "mtx.csv"
         dist_path = "dist.csv"
         mtx, dist = loadCalibrationFile(mtx_path, dist_path)
@@ -80,8 +76,8 @@ def donkey_camera(port_no, title, undistort_flag):
             #print("got:", len(jpg))
             image = binary_to_img(jpg)
             img_arr = img_to_arr(image)
-            if undistort_flag == False:
-                scale = 1
+            if undistort_flag != 0:
+                scale = undistort_flag
                 height = img_arr.shape[0] * scale
                 width = img_arr.shape[1] * scale 
                 img_bgr = cv2.cvtColor(img_arr, cv2.COLOR_RGB2BGR)
@@ -96,8 +92,11 @@ def donkey_camera(port_no, title, undistort_flag):
 
 
 if __name__ == "__main__":
+'''
+     python rmt_donkeycam 5560 "minion" 0
+'''
     args = sys.argv
-    if len(args) >= 3:
+    if len(args) >= 4:
         try:
             print("*** monitor driver view directly")
             #
@@ -107,9 +106,10 @@ if __name__ == "__main__":
             donkey_cam1_up_port = int(args[1]) + 2
             print("port of zmq proxy: ", donkey_cam1_up_port)
 
-            undistort_flag = False
+            window_title = arg[2]
+            undistort_flag = int(args[3])
             thread_cam1 = Thread(target=donkey_camera, 
-                args=(donkey_cam1_up_port, args[2], undistort_flag))
+                args=(donkey_cam1_up_port, window_title, undistort_flag))
 
             thread_cam1.start()
         except KeyboardInterrupt:

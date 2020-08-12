@@ -123,42 +123,39 @@ def donkey_camera(ip_address, port_no, title):
                 break
 
 def donkey_joystick(controller, ip_address, port_no):
-    #cfg = dk.load_config()
     p = JoyStickPub(controller, ip_address, port_no)
     p.run()
 
-
 if __name__ == "__main__":
     args = sys.argv
-    if len(args) >= 2:
+    if len(args) >= 1:
         try:
             print("*** start donkey controller")
             #
             cfg = dk.load_config()
-            cloud_js_ip_address = cfg.NETWORK_JS_SERVER_IP
-            print("js  addr of zmq proxy: ", cloud_js_ip_address)
-            cloud_cam_ip_address = cfg.NETWORK_CAM_SERVER_IP
-            print("cam addr of zmq proxy: ", cloud_cam_ip_address)
-
-            js_up_port = cfg.NETWORK_CLOUD_PORT
-            print("port of zmq proxy: ", js_up_port)
-            donkey_cam_down_port = js_up_port + 3
-            #birdview_cam_down_port = js_up_port + 5
-
-            thread_js   = Thread(target=donkey_joystick, 
-                args=(cfg.CONTROLLER_TYPE, cloud_js_ip_address, js_up_port))
-            if args[1] == "cam":
+            # initialize & set thread parameter
+            if cfg.USE_NETWORKED_JS:
+                cloud_js_ip_address = cfg.NETWORK_JS_SERVER_IP
+                print("js  addr of zmq proxy: ", cloud_js_ip_address)
+                js_up_port = cfg.NETWORK_CLOUD_PORT
+                print("port of zmq proxy: ", js_up_port)
+                thread_js   = Thread(target=donkey_joystick, 
+                    args=(cfg.CONTROLLER_TYPE, cloud_js_ip_address, js_up_port))
+            if cfg.PUB_CAMERA_IMAGES:
+                donkey_cam_down_port = cfg.NETWORK_CLOUD_PORT + 3
+                cloud_cam_ip_address = cfg.NETWORK_CAM_SERVER_IP
+                print("cam addr of zmq proxy: ", cloud_cam_ip_address)
                 thread_cam1 = Thread(target=donkey_camera, 
                     args=(cloud_cam_ip_address, donkey_cam_down_port, "driver's view"))
-            #thread_cam2 = Thread(target=donkey_camera, 
-            #    args=(cloud_ip_address, birdview_cam_down_port, "bird's eyes view"))
 
-            print("start joystick")
-            thread_js.start()
-            if args[1] == "cam":
+            # start thread
+            if cfg.USE_NETWORKED_JS: 
+                print("start joystick")
+                thread_js.start()
+            if cfg.PUB_CAMERA_IMAGES:
                 print("start donkey camera")
                 thread_cam1.start()
-            #thread_cam2.start()
+
         except KeyboardInterrupt:
             print("keyboard Interrupt")    
     else:
