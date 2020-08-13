@@ -98,6 +98,7 @@ class JoyStickPub(object):
                 if axis is None:
                     axis = "0"
                     axis_val = 0
+                print(axis)
                 message_data = (button, button_state, axis, axis_val)
                 self.socket.send_string( "%s %d %s %f" % message_data)
                 #print("SENT", message_data)

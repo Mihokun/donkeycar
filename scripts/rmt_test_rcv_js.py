@@ -1,3 +1,4 @@
+import sys
 import os
 import array
 import time
@@ -32,8 +33,24 @@ class Test_JoyStickSub(object):
         while self.running:
             #payload = self.socket.recv().decode("utf-8")
             payload = self.socket.recv_string()
-            print("got", payload)
+            #print("got", payload)
             button, button_state, axis, axis_val = payload.split(' ')
+
+            if axis == "left_stick_horz":
+                if axis_val == 0:
+                    print("Neutral :", axis_val)
+                elif axis_val > 0.0:
+                    print("Right   :", axis_val)
+                else:
+                    print("Left    :", axis_val)
+            if axis == "right_stick_vert":
+                if axis_val == 0:
+                    print("Stop    :", axis_val)
+                elif axis_val > 0.0:
+                    print("Forward :", axis_val)
+                else:
+                    print("Backward:", axis_val)
+
             self.button = button
             self.button_state = (int)(button_state)
             self.axis = axis
@@ -63,6 +80,7 @@ if __name__ == "__main__":
             js_down_port = int(args[1]) + 1
             print("port of zmq proxy: ", js_down_port)
             netwkJs = Test_JoyStickSub(ip=cfg.NETWORK_JS_SERVER_IP, port=js_down_port)
+            print("waiting for remote joystick")
             while True:
                 netwkJs.update()
         except KeyboardInterrupt:
