@@ -1413,7 +1413,7 @@ class JoyStickSub(object):
     '''
     Use Zero Message Queue (zmq) to subscribe to control messages from a remote joystick
     '''
-    def __init__(self, ip, port = 5556):
+    def __init__(self, ip, port = 5560):
         import zmq
         context = zmq.Context()
         self.socket = context.socket(zmq.SUB)
