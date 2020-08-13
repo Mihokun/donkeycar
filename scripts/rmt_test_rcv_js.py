@@ -36,25 +36,26 @@ class Test_JoyStickSub(object):
             #print("got", payload)
             button, button_state, axis, axis_val = payload.split(' ')
 
+            self.axis_val = (float)(axis_val)
             if axis == "left_stick_horz":
                 if axis_val == 0:
-                    print("Neutral :", axis_val)
+                    print("Neutral :", self.axis_val)
                 elif axis_val > 0.0:
-                    print("Right   :", axis_val)
+                    print("Right   :", self.axis_val)
                 else:
-                    print("Left    :", axis_val)
+                    print("Left    :", self.axis_val)
             if axis == "right_stick_vert":
                 if axis_val == 0:
-                    print("Stop    :", axis_val)
+                    print("Stop    :", self.axis_val)
                 elif axis_val > 0.0:
-                    print("Forward :", axis_val)
+                    print("Forward :", self.axis_val)
                 else:
-                    print("Backward:", axis_val)
+                    print("Backward:", self.axis_val)
 
             self.button = button
             self.button_state = (int)(button_state)
             self.axis = axis
-            self.axis_val = (float)(axis_val)
+
             if self.button == "0":
                 self.button = None
             if self.axis == "0":
