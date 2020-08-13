@@ -98,7 +98,22 @@ class JoyStickPub(object):
                 if axis is None:
                     axis = "0"
                     axis_val = 0
-                print(axis)
+                
+                if axis == "left_stick_horz":
+                    if axis_val == 0:
+                        print("Neutral :", axis_val)
+                    elif axis_val > 0.0:
+                        print("Right   :", axis_val)
+                    else:
+                        print("Left    :", axis_val)
+                if axis == "right_stick_vert":
+                    if axis_val == 0:
+                        print("Stop    :", axis_val)
+                    elif axis_val > 0.0:
+                        print("Backward:", axis_val)
+                    else:
+                        print("Forward :", axis_val)
+
                 message_data = (button, button_state, axis, axis_val)
                 self.socket.send_string( "%s %d %s %f" % message_data)
                 #print("SENT", message_data)

@@ -48,9 +48,9 @@ class Test_JoyStickSub(object):
                 if self.axis_val == 0:
                     print("Stop    :", self.axis_val)
                 elif self.axis_val > 0.0:
-                    print("Forward :", self.axis_val)
-                else:
                     print("Backward:", self.axis_val)
+                else:
+                    print("Forward :", self.axis_val)
 
             self.button = button
             self.button_state = (int)(button_state)
