@@ -38,16 +38,16 @@ class Test_JoyStickSub(object):
 
             self.axis_val = (float)(axis_val)
             if axis == "left_stick_horz":
-                if axis_val == 0:
+                if self.axis_val == 0:
                     print("Neutral :", self.axis_val)
-                elif axis_val > 0.0:
+                elif self.axis_val > 0.0:
                     print("Right   :", self.axis_val)
                 else:
                     print("Left    :", self.axis_val)
             if axis == "right_stick_vert":
-                if axis_val == 0:
+                if self.axis_val == 0:
                     print("Stop    :", self.axis_val)
-                elif axis_val > 0.0:
+                elif self.axis_val > 0.0:
                     print("Forward :", self.axis_val)
                 else:
                     print("Backward:", self.axis_val)
