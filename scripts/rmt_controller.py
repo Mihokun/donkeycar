@@ -87,6 +87,7 @@ class JoyStickPub(object):
         context = zmq.Context()
         self.socket = context.socket(zmq.PUB)
         self.socket.connect("tcp://%s:%d" % (ip, port))
+        print("sending joystick data...")
 
     def run(self):
         while True:
@@ -99,20 +100,20 @@ class JoyStickPub(object):
                     axis = "0"
                     axis_val = 0
                 
-                if axis == "left_stick_horz":
-                    if axis_val == 0:
-                        print("Neutral :", axis_val)
-                    elif axis_val > 0.0:
-                        print("Right   :", axis_val)
-                    else:
-                        print("Left    :", axis_val)
-                if axis == "right_stick_vert":
-                    if axis_val == 0:
-                        print("Stop    :", axis_val)
-                    elif axis_val > 0.0:
-                        print("Backward:", axis_val)
-                    else:
-                        print("Forward :", axis_val)
+                #if axis == "left_stick_horz":
+                #    if axis_val == 0:
+                #        print("Neutral :", axis_val)
+                #    elif axis_val > 0.0:
+                #        print("Right   :", axis_val)
+                #    else:
+                #        print("Left    :", axis_val)
+                #if axis == "right_stick_vert":
+                #    if axis_val == 0:
+                #        print("Stop    :", axis_val)
+                #    elif axis_val > 0.0:
+                #        print("Backward:", axis_val)
+                #    else:
+                #        print("Forward :", axis_val)
 
                 message_data = (button, button_state, axis, axis_val)
                 self.socket.send_string( "%s %d %s %f" % message_data)
