@@ -3,7 +3,6 @@ import os
 import time
 from threading import Thread
 import zmq
-import cv2
 import numpy
 import donkeycar as dk
 from donkeycar.utils import binary_to_img, img_to_arr
@@ -89,6 +88,15 @@ class JoyStickPub(object):
         self.socket.connect("tcp://%s:%d" % (ip, port))
         print("sending joystick data...")
 
+    def test_probe(self):
+        button  = "0"
+        button_state = 0
+        axis_val = 0
+        for i in range(1, 10): 
+            time.sleep(3)
+            message_data = (button, button_state, "left_stick_horz", i/10)
+            self.socket.send_string( "%s %d %s %f" % message_data)
+
     def run(self):
         while True:
             button, button_state, axis, axis_val = self.js.poll()
@@ -123,6 +131,7 @@ class JoyStickPub(object):
 def donkey_camera(ip_address, port_no, title):
     print("receiving camera data...")
     s = ZMQValueSub("camera", ip=ip_address, port=port_no, hwm=1)
+    
     while True:
         jpg = s.run()
         #print(res)
@@ -141,6 +150,7 @@ def donkey_camera(ip_address, port_no, title):
 
 def donkey_joystick(controller, ip_address, port_no):
     p = JoyStickPub(controller, ip_address, port_no)
+    p.test_probe()
     p.run()
 
 if __name__ == "__main__":

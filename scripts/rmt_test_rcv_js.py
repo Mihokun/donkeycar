@@ -72,13 +72,13 @@ class Test_JoyStickSub(object):
 
 if __name__ == "__main__":
     args = sys.argv
-    if len(args) >= 2:
+    if len(args) >= 1:
         try:
             print("*** test joystick controller")
             #
             cfg = dk.load_config()
 
-            js_down_port = int(args[1]) + 1
+            js_down_port = cfg.NETWORK_CLOUD_PORT + 1
             print("port of zmq proxy: ", js_down_port)
             netwkJs = Test_JoyStickSub(ip=cfg.NETWORK_JS_SERVER_IP, port=js_down_port)
             print("waiting for remote joystick")
