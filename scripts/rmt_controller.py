@@ -93,7 +93,7 @@ class JoyStickPub(object):
         button_state = 0
         axis_val = 0
         for i in range(1, 10): 
-            time.sleep(3)
+            time.sleep(1)
             message_data = (button, button_state, "left_stick_horz", i/10)
             self.socket.send_string( "%s %d %s %f" % message_data)
 

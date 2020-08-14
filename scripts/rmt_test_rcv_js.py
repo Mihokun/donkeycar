@@ -28,6 +28,10 @@ class Test_JoyStickSub(object):
     def shutdown(self):
         self.running = False
         time.sleep(0.1)
+        print("shutting down zmq")
+        self.socket.close()
+        #context = zmq.Context()
+        #context.destroy()
 
     def update(self):
         while self.running:
@@ -85,6 +89,7 @@ if __name__ == "__main__":
             while True:
                 netwkJs.update()
         except KeyboardInterrupt:
+            netwkJs.shutdown()
             print("keyboard Interrupt")    
     else:
         print("Argument are too short")        
