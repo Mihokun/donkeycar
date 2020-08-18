@@ -96,14 +96,14 @@ class OLEDPart(object):
             self.wlan0 = 'IP: %s' % (wlan0)
         else:
             self.wlan0 = None
-        ngrok = OLEDPart.get_ip_address_ngrok()
+        #ngrok = OLEDPart.get_ip_address_ngrok()
         #print("ngrok command ", ngrok)
-        if ngrok != "":
-            print('ngrok: ', ngrok)
-            ports = re.findall('[0-9]+$', ngrok)
-            self.ngrok = ports[0]
-        else:
-            self.ngrok = "not found ngrok"
+        #if ngrok != "":
+        #    print('ngrok: ', ngrok)
+        #    ports = re.findall('[0-9]+$', ngrok)
+        #    self.ngrok = ports[0]
+        #else:
+        #    self.ngrok = "not found ngrok"
 
     def run(self):
         if not self.on:
@@ -122,7 +122,8 @@ class OLEDPart(object):
         self.update()
 
     def update_slots(self):
-        updates = [self.wlan0, self.ngrok, self.recording, self.user_mode]
+        # updates = [self.wlan0, self.ngrok, self.recording, self.user_mode]
+        updates = [self.wlan0, self.recording, self.user_mode]
         index = 0
         # Update slots
         for update in updates:
