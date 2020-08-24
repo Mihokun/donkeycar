@@ -1122,7 +1122,7 @@ class PS4JoystickController(JoystickController):
             'options' : self.toggle_constant_throttle,
         }
 
-        selbf.axis_trigger_map = {
+        self.axis_trigger_map = {
             'left_stick_horz' : self.set_steering,
             'right_stick_vert' : self.set_throttle,
         }
