@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 import glob
 from donkeycar.utils import rgb2gray
+import cv2
 
 class BaseCamera:
 
@@ -54,6 +55,10 @@ class PiCamera(BaseCamera):
 
             if self.image_d == 1:
                 self.frame = rgb2gray(self.frame)
+
+            cv2.imshow('minion', self.frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break   
 
             # if the thread indicator variable is set, stop the thread
             if not self.on:
